@@ -1,5 +1,5 @@
-// broken.js
 function addNumbers(a, b) {
-    return a - b; // Bug: subtracting instead of adding
+    return a + b;
 }
-consol.log(addNumbers(5, 10)); // Bug: typo in console
+
+console.log(addNumbers(5, 10));
