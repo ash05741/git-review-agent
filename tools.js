@@ -1,7 +1,7 @@
 import fs from 'fs';
 import { Type } from '@google/genai';
 
-// 1. Describe the tools to the LLM using JSON Schema
+// 1. Export the tool definitions
 export const fileTools = {
     functionDeclarations: [
         {
@@ -28,21 +28,23 @@ export const fileTools = {
     ],
 };
 
-// 2. The local execution logic
+// 2. Export the updated local execution logic
 export async function handleTool(call) {
     const { filepath, content } = call.args;
 
     if (call.name === 'read_file') {
         console.log(`\n[Agent Action] 📖 Reading ${filepath}...`);
-        try { return fs.readFileSync(filepath, 'utf8'); }
-        catch (e) { return `Error: ${e.message}`; }
+        try {
+            return { file_content: fs.readFileSync(filepath, 'utf8') };
+        }
+        catch (e) { return { error: e.message }; }
     }
 
     if (call.name === 'write_file') {
         console.log(`\n[Agent Action] ✍️ Overwriting ${filepath}...`);
         try {
             fs.writeFileSync(filepath, content);
-            return "File updated successfully.";
-        } catch (e) { return `Error: ${e.message}`; }
+            return { status: "File updated successfully." };
+        } catch (e) { return { error: e.message }; }
     }
 }
